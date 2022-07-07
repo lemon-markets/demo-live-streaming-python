@@ -3,7 +3,6 @@ import json
 from lemon import api
 from lemon.market_data.model.quote import Quote
 import paho.mqtt.client as mqtt
-import requests
 import sys
 
 ## Configuration
@@ -46,8 +45,8 @@ def on_subscribe(mqtt_client, userdata, level, buff):
     # you have _all_ the latest quotes and you can update them via incoming
     # live stream messages.
     print("Published.   Fetching latest quotes for initialization…")
-    response = lm_client.market_data.quotes.get_latest(isin=instruments, epoch=True, decimals=False)
-    for quote in response.results:
+    latest = lm_client.market_data.quotes.get_latest(isin=instruments, epoch=True, decimals=False)
+    for quote in latest.results:
         quotes[quote.isin] = quote
     print("Initialized. Waiting for live stream messages…")
     print_quotes()
