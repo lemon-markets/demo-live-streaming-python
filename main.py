@@ -18,6 +18,8 @@ instruments = [
 ## Quotes
 
 quotes = {}
+updates = 0
+spinner = "-\\|/"
 
 def print_quotes():
     print("\r", end="")
@@ -26,6 +28,7 @@ def print_quotes():
         bid = format(quotes[instrument].b / 10000, ".4f")
         date = datetime.fromtimestamp(quotes[instrument].t / 1000.0).isoformat(timespec='milliseconds')
         print(f"{instrument}(ask={ask},bid={bid},date={date})", end=" ")
+    print(spinner[updates % len(spinner)], end="")
     sys.stdout.flush()
 
 ## Lemon Markets API Client
@@ -52,17 +55,11 @@ def on_subscribe(mqtt_client, userdata, level, buff):
     print_quotes()
 
 def on_message(client, userdata, msg):
+    global updates
     data = json.loads(msg.payload)
-    quote = Quote(
-        isin=data["isin"],
-        b_v=int(data["b_v"]),
-        a_v=int(data["a_v"]),
-        b=int(data["b"]),
-        a=int(data["a"]),
-        t=int(data["t"]),
-        mic=data["mic"],
-    )
+    quote = Quote._from_data(data, int, int)
     quotes[quote.isin] = quote
+    updates += 1
     print_quotes()
 
 ## Request Live Streaming Credentials
