@@ -69,7 +69,7 @@ print("Fetching credentials for live streaming…")
 
 response = lm_client.market_data.post("https://realtime.lemon.markets/v1/auth", json={}).json()
 # **NOTE:** Use `expires_at` to reconnect, because this connection will stop
-# receiving data.
+# receiving data: https://docs.lemon.markets/live-streaming/overview#stream-authorization
 expires_at = datetime.fromtimestamp(response['expires_at'] / 1000)
 print(f"Fetched.     Token expires at {expires_at.isoformat()}")
 user_id = response['user_id']
