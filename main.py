@@ -19,7 +19,8 @@ instruments = [
 
 quotes = {}
 updates = 0
-spinner = "-\\|/"
+# ⎯ ⟍ ⏐ ⟋
+spinner = u"\u23af\u27cd\u23d0\u27cb"
 
 def print_quotes():
     print("\r", end="")
