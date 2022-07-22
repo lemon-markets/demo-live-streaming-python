@@ -67,18 +67,14 @@ def on_message(client, userdata, msg):
 
 print("Fetching credentials for live streaming…")
 
-response = lm_client.market_data.post("https://realtime.lemon.markets/v1/auth", json={}).json()
-# **NOTE:** Use `expires_at` to reconnect, because this connection will stop
-# receiving data: https://docs.lemon.markets/live-streaming/overview#stream-authorization
-expires_at = datetime.fromtimestamp(response['expires_at'] / 1000)
-print(f"Fetched.     Token expires at {expires_at.isoformat()}")
-user_id = response['user_id']
-token = response['token']
+response = lm_client.streaming.authenticate()
+print(f"Fetched.     Token expires at {response.expires_at.isoformat()}")
+user_id = response.user_id
 
 ## Prepare Live Streaming Connection
 
 mqtt_client = mqtt.Client("Ably_Client")
-mqtt_client.username_pw_set(username=token)
+mqtt_client.username_pw_set(username=response.token)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 mqtt_client.on_subscribe = on_subscribe
